@@ -32,3 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 /out/
+
+\src\main\resources\qr-database-a6078-firebase-adminsdk-885ht-5dd2f2d0f1.json
