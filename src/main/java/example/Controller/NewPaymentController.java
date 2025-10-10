@@ -1,6 +1,7 @@
 package example.Controller;
 
 import example.Model.MerchantUser;
+import example.Model.NewPaymentRequest;
 import example.Model.NewPaymentService;
 import example.Model.Payment;
 import example.Model.User;
@@ -17,9 +18,10 @@ public class NewPaymentController {
    @Autowired
     NewPaymentService newPaymentService;
     @PostMapping("/NewPayment")
-    String NewPaymentServiceCalling(@RequestBody User user,@RequestBody MerchantUser merchantUser,@RequestBody Payment payment){
-        return newPaymentService.addNewPayement(user,merchantUser,payment);
-    }
+public String newPayment(@RequestBody NewPaymentRequest req) {
+    return newPaymentService.addNewPayment(req.user, req.merchant, req.payment);
+}
+
 }
 
 

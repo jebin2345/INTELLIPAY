@@ -12,18 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class NewPaymentService {
-    public String addNewPayement(User user, MerchantUser merchantUser, Payment payment) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference documentReferencePayments = dbFirestore.collection("Payments").document(user.getId());
-        DocumentReference documentReferenceUsers = dbFirestore.collection("Users").document(user.getId());
+    public String addNewPayment(User user, MerchantUser merchantUser, Payment payment) {
+    try {
+        Firestore db = FirestoreClient.getFirestore();
 
-        /*ApiFuture<QuerySnapshot> documentQuery = documentReference.collection(user.getId()).get();*/
-    /*    List<QueryDocumentSnapshot> documentSnapshots = documentQuery.get().getDocuments();
-        List<Payment> paymentList = new ArrayList<>();
-        for (QueryDocumentSnapshot document : documentSnapshots) {
-            paymentList.add(document.toObject(Payment.class));
-        }
-    }*/
-    return null;
+        // Example: store in Payments -> userId -> payments subcollection
+        DocumentReference userDoc = db.collection("Payments").document(user.getId());
+
+        // Add the payment object to a subcollection
+        userDoc.collection("payments").add(payment);
+
+        // Optionally, also store in MerchantPayments
+        DocumentReference merchantDoc = db.collection("MerchantPayments").document(merchantUser.getEmail());
+        merchantDoc.collection("payments").add(payment);
+
+        return "OK";
+    } catch (Exception e) {
+        e.printStackTrace();
+        return "ERROR";
     }
+}
+
 }
