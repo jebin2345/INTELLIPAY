@@ -24,6 +24,14 @@ public class LoginController {
     @PostMapping("/merchantLogin")
     MerchantUser getMerchant(@RequestBody LoginInfo loginInfo) throws ExecutionException, InterruptedException {
         System.out.println("login request Initiated");
-        return loginService.merchantLogIn(loginInfo.getEmail(), loginInfo.getPassword());
+        MerchantUser merchant = loginService.merchantLogIn(loginInfo.getEmail(), loginInfo.getPassword());
+        
+        // Update UPI ID if provided
+        if (merchant != null && loginInfo.getUpiId() != null && !loginInfo.getUpiId().trim().isEmpty()) {
+            merchant.setUpiId(loginInfo.getUpiId());
+            loginService.updateMerchantUPI(merchant);
+        }
+        
+        return merchant;
     }
 }

@@ -20,17 +20,16 @@ public class LoginService {
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         HashMap<String, User> userHashMap = new HashMap<>();
         for (QueryDocumentSnapshot document : documents) {
-            userHashMap.put(document.toObject(User.class).getEmail(), document.toObject(User.class));
+            User user = document.toObject(User.class);
+            userHashMap.put(user.getEmail().toLowerCase(Locale.ROOT), user);
         }
         if (userHashMap.containsKey(email.toLowerCase(Locale.ROOT))) {
-            System.out.println("User found! ");
-            User known_user;
-            known_user = userHashMap.get(email); //fetching user from hashmap
-            if (known_user.getPassword().equals(pw)) {   //return User if pw and username match
+            User known_user = userHashMap.get(email.toLowerCase(Locale.ROOT));
+            if (known_user.getPassword().equals(pw)) {
                 return known_user;
             }
         }
-        return null; //user not found return false;
+        return null;
     }
 
     public MerchantUser merchantLogIn(String email , String pw) throws ExecutionException, InterruptedException {
@@ -39,16 +38,29 @@ public class LoginService {
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         HashMap<String, MerchantUser> merchantHashMap = new HashMap<>();
         for (QueryDocumentSnapshot document : documents) {
-            merchantHashMap.put(document.toObject(MerchantUser.class).getEmail(), document.toObject(MerchantUser.class));
+            MerchantUser merchant = document.toObject(MerchantUser.class);
+            merchantHashMap.put(merchant.getEmail().toLowerCase(Locale.ROOT), merchant);
         }
         if (merchantHashMap.containsKey(email.toLowerCase(Locale.ROOT))) {
-            System.out.println("Merchant found!");
-            MerchantUser known_merchant;
-            known_merchant = merchantHashMap.get(email); //fetching user from hashmap
-            if (known_merchant.getPassword().equals(pw)) {   //return User if pw and username match
+            MerchantUser known_merchant = merchantHashMap.get(email.toLowerCase(Locale.ROOT));
+            if (known_merchant.getPassword().equals(pw)) {
                 return known_merchant;
             }
         }
-        return null; //user not found return false;
+        return null;
+    }
+
+    public void updateMerchantUPI(MerchantUser merchant) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        
+        // Update the merchant's UPI ID in Firestore
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("Merchants")
+            .whereEqualTo("email", merchant.getEmail())
+            .get();
+        
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        if (!documents.isEmpty()) {
+            documents.get(0).getReference().update("upiId", merchant.getUpiId());
+        }
     }
 }

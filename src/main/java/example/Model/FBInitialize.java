@@ -22,7 +22,7 @@ public class FBInitialize {
             if (credPath != null && !credPath.isEmpty()) {
                 serviceAccount = new FileInputStream(credPath);
             } else {
-                serviceAccount = this.getClass().getResourceAsStream("/firebase-service-account.json");
+                serviceAccount = this.getClass().getResourceAsStream("/qr-database-a6078-firebase-adminsdk-885ht-5dd2f2d0f1.json");
                 if (serviceAccount == null) {
                     throw new RuntimeException("Firebase credentials not found in env var or resources.");
                 }
@@ -30,7 +30,6 @@ public class FBInitialize {
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://intellipay-jh.firebaseio.com")  // ← CHANGE THIS
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {

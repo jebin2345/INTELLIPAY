@@ -1,5 +1,6 @@
 package example.Model;
 
+
 public class MerchantUser  {
     private String name;
     private String currency;
@@ -8,6 +9,7 @@ public class MerchantUser  {
     private int accountNumber;
     private int branchNumber;
     private int bankID;
+    private String upiId;
 
     public String getName() {
         return name;
@@ -63,5 +65,13 @@ public class MerchantUser  {
 
     public void setBankID(int bankID) {
         this.bankID = bankID;
+    }
+
+    public String getUpiId() {
+        return upiId;
+    }
+
+    public void setUpiId(String upiId) {
+        this.upiId = upiId;
     }
 }

@@ -120,3 +120,48 @@ nav {
 nav ul a.active{
     background-color: rgba(0,0,0,0.1);
 }
+
+/* Transaction Status Styles */
+.status-pending {
+    background-color: #ffc107;
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-completed {
+    background-color: #28a745;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-failed {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* History Table Styles */
+#history_body_table tr:hover {
+    background-color: #f5f5f5;
+}
+
+#history_body_table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+#history_body_table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    padding: 12px 8px;
+    border-bottom: 2px solid #dee2e6;
+}

@@ -1,9 +1,6 @@
 package example.Controller;
 
-import example.Model.HistoryService;
-import example.Model.MerchantUser;
-import example.Model.Payment;
-import example.Model.User;
+import example.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +15,18 @@ public class HistoryController {
     @Autowired
     HistoryService historyService;
 
+    @Autowired
+    TransactionService transactionService;
+
     @PostMapping("/history")
     List<Payment>  getHistory(@RequestBody User user) throws ExecutionException, InterruptedException {
         return HistoryService.getPayments(user);
     }
 
     @PostMapping("/merchantHistory")
-    List<Payment> getMerchantHistory (@RequestBody MerchantUser merchant) throws ExecutionException, InterruptedException {
-        return HistoryService.getMerchantPayments(merchant);
+    List<Transaction> getMerchantHistory (@RequestBody MerchantUser merchant) throws ExecutionException, InterruptedException {
+        System.out.println("Merchant history requested");
+        return transactionService.getMerchantTransactions(merchant.getEmail());
     }
 
     @GetMapping("/welcome")

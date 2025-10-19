@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Payment</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12 center">
+                <img src="images/logo_small.png" class="logo" alt="logo">
+                <h4>Customer Payment Portal</h4>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col s12 m8 l6 offset-m2 offset-l3">
+                <div class="card">
+                    <div class="card-content">
+                        <h5>Scan QR Code to Pay</h5>
+                        <p>Use your UPI app to scan the QR code and complete the payment</p>
+                        
+                        <!-- QR Code Display Area -->
+                        <div class="center" id="qr-display" style="display: none;">
+                            <img id="qr-image" style="max-width: 300px; height: auto;">
+                            <p><strong>Amount: </strong><span id="amount-display"></span></p>
+                            <p><strong>Merchant: </strong><span id="merchant-display"></span></p>
+                        </div>
+                        
+                        <!-- Manual Entry Form -->
+                        <div id="manual-entry" style="display: none;">
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="input-field">
+                                        <input type="text" id="upi-id" placeholder="Enter UPI ID">
+                                        <label for="upi-id">UPI ID</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="input-field">
+                                        <input type="number" id="payment-amount" placeholder="Enter Amount">
+                                        <label for="payment-amount">Amount</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="input-field">
+                                        <input type="text" id="payment-note" placeholder="Payment Note">
+                                        <label for="payment-note">Payment Note</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="center">
+                            <button class="btn orange waves-effect waves-light" onclick="generateUPIQR()">
+                                Generate Payment QR
+                            </button>
+                            <button class="btn blue waves-effect waves-light" onclick="toggleManualEntry()">
+                                Manual Entry
+                            </button>
+                        </div>
+                        
+                        <!-- Payment Status -->
+                        <div id="payment-status" class="center" style="display: none;">
+                            <div class="card-panel green lighten-2">
+                                <span class="white-text">Payment Successful!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="row">
+            <div class="col s12 m8 l6 offset-m2 offset-l3">
+                <div class="card-panel blue lighten-4">
+                    <h6>How to Pay:</h6>
+                    <ol>
+                        <li>Click "Generate Payment QR" to create a UPI payment QR code</li>
+                        <li>Open your UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                        <li>Scan the QR code with your UPI app</li>
+                        <li>Enter your UPI PIN to complete the payment</li>
+                        <li>You will receive a payment confirmation</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+
+        function generateUPIQR() {
+            // For demo purposes, we'll use sample data
+            // In a real app, this would come from the scanned QR code or form input
+            var upiData = {
+                merchantName: "Test Merchant",
+                upiId: "merchant@upi",
+                amount: "100.00",
+                currency: "INR",
+                transactionNote: "Payment to Test Merchant"
+            };
+            
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify(upiData),
+                redirect: 'follow'
+            };
+
+            fetch("http://localhost:8080/generateUPIQR", requestOptions)
+                .then(response => response.blob())
+                .then(blob => {
+                    var imageUrl = URL.createObjectURL(blob);
+                    document.getElementById("qr-image").src = imageUrl;
+                    document.getElementById("qr-display").style.display = "block";
+                    document.getElementById("amount-display").textContent = "₹" + upiData.amount;
+                    document.getElementById("merchant-display").textContent = upiData.merchantName;
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert('Error generating QR code. Please try again.');
+                });
+        }
+        
+        function toggleManualEntry() {
+            var manualEntry = document.getElementById("manual-entry");
+            var qrDisplay = document.getElementById("qr-display");
+            
+            if (manualEntry.style.display === "none") {
+                manualEntry.style.display = "block";
+                qrDisplay.style.display = "none";
+            } else {
+                manualEntry.style.display = "none";
+            }
+        }
+        
+        // Simulate payment completion (in real app, this would be handled by UPI app)
+        function simulatePayment() {
+            document.getElementById("payment-status").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("payment-status").style.display = "none";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
